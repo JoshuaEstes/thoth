@@ -10,9 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  */
-class BuildCommand extends Command
+class GenerateCommand extends Command
 {
-    protected static $defaultName = 'build';
+    protected static $defaultName = 'generate';
 
     /**
      * {@inheritdoc}
@@ -20,7 +20,7 @@ class BuildCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Build website')
+            ->setDescription('Generates website')
         ;
     }
 

@@ -17,7 +17,7 @@ class Application extends BaseApplication
         parent::__construct('Thoth');
 
         $this->addCommands([
-            new Command\BuildCommand(),
+            new Command\GenerateCommand(),
             new Command\NewCommand(),
             new Command\ServeCommand(),
             new Command\WatchCommand(),
