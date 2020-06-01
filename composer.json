@@ -1,0 +1,52 @@
+{
+    "name": "thoth/thoth",
+    "description": "PHP Static Site Generator",
+    "keywords": [],
+    "homepage": "https://github.com/JoshuaEstes/thoth",
+    "type": "project",
+    "license": "MIT",
+    "support": {
+        "docs": "https://github.com/JoshuaEstes/thoth/wiki",
+        "issues": "https://github.com/JoshuaEstes/thoth/issues",
+        "wiki": "https://github.com/JoshuaEstes/thoth/wiki",
+        "source": "https://github.com/JoshuaEstes/thoth"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/JoshuaEstes"
+        }
+    ],
+    "bin": [
+        "bin/thoth"
+    ],
+    "require": {
+        "php": ">=7.1",
+        "psr/log": "^1.1",
+        "symfony/console": "^4.4",
+        "symfony/filesystem": "^4.4",
+        "symfony/finder": "~4.4",
+        "symfony/process": "~4.4",
+        "symfony/yaml": "~4.4",
+        "twig/twig": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.1",
+        "symfony/stopwatch": "~4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Thoth\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Thoth\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    }
+}
