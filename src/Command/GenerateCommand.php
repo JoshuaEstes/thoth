@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
@@ -54,9 +55,14 @@ class GenerateCommand extends Command
         // init markdown parser
         $parser = new Parser();
 
+        // init filesystem
+        $filesystem = new Filesystem();
+
         // Find Files
         $finder = new Finder();
         $finder
+            ->ignoreVCS(true)
+            ->sortByName()
             ->files()
             ->name('*.md')
             ->in($input->getOption('source'));
@@ -66,8 +72,12 @@ class GenerateCommand extends Command
 
             return 1;
         }
+
+        /**
+         * Parse and render each file that was found
+         */
         foreach ($finder as $file) {
-            $output->writeln(sprintf('Parsing "<info>%s</info>"', $file->getRelativePathname()));
+            $output->writeln(sprintf('Parsing "<info>%s</info>"...', $file->getRelativePathname()));
             $document = $parser->parse($file->getContents());
             $context  = [
                 'site' => [], // @todo
@@ -78,7 +88,11 @@ class GenerateCommand extends Command
                 ->load('@'.$input->getOption('theme').'/base.html.twig')
                 ->render($context);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
-            file_put_contents($input->getOption('destination').'/'.$filename, $rendered);
+            $filesystem->dumpFile($input->getOption('destination').'/'.$filename, $rendered);
+            $output->writeln([
+                sprintf('"<info>%s</info>" => "<comment>%s</comment>"', $file->getRelativePathname(), $filename),
+                '',
+            ]);
         }
 
         $output->writeln('Complete');
