@@ -31,7 +31,7 @@ class GenerateCommand extends Command
             ->setDefinition([
                 new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', 'example'),
                 new InputOption('destination', 'dest', InputOption::VALUE_REQUIRED, 'What directory to you want your site output to?', 'public'),
-                //new InputOption('theme', null, InputOption::VALUE_REQUIRED, '', 'default'),
+                new InputOption('theme', null, InputOption::VALUE_REQUIRED, '', 'default'),
                 //new InputOption('config', null, InputOption::VALUE_REQUIRED, '', '.thoth.yml'),
                 //new InputOption('env', null, InputOption::VALUE_REQUIRED, '', 'prod'),
             ])
@@ -45,6 +45,7 @@ class GenerateCommand extends Command
     {
         // init twig
         $loader = new FilesystemLoader(['themes/default']);
+        $loader->addPath('themes/default', 'default');
         $twig = new Environment($loader, [
             'autoescape' => false,
             'debug'      => true,
@@ -65,9 +66,9 @@ class GenerateCommand extends Command
         }
 
         foreach ($finder as $file) {
-            $output->writeln(sprintf('Parsing "%s"', $file->getRelativePathname()));
+            $output->writeln(sprintf('Parsing "<info>%s</info>"', $file->getRelativePathname()));
             $content  = $pExtra->text(file_get_contents($file->getRealPath()));
-            $rendered = $twig->load('base.html.twig')->render(['content' => $content]);
+            $rendered = $twig->load('@'.$input->getOption('theme').'/base.html.twig')->render(['content' => $content]);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
             file_put_contents($input->getOption('destination').'/'.$filename, $rendered);
         }
