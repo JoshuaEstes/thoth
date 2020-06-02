@@ -2,15 +2,14 @@
 <?php
 
 use Thoth\Application;
-//use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 
 set_time_limit(0);
 
 if (file_exists(dirname(__DIR__).'/vendor/autoload.php')) {
     require dirname(__DIR__).'/vendor/autoload.php';
-} elseif (file_exists(dirname(__DIR__).'/../../vendor/autoload.php')) {
-    require dirname(__DIR__).'/../../vendor/autoload.php';
+} elseif (file_exists(dirname(__DIR__).'/../../autoload.php')) {
+    require dirname(__DIR__).'/../../autoload.php';
 } else {
     throw new \Exception('Composer does not seem to be installed');
 }
