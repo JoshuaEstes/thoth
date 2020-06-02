@@ -65,6 +65,7 @@ class GenerateCommand extends Command
         }
 
         foreach ($finder as $file) {
+            $output->writeln(sprintf('Parsing "%s"', $file->getRelativePathname()));
             $content  = $pExtra->text(file_get_contents($file->getRealPath()));
             $rendered = $twig->load('base.html.twig')->render(['content' => $content]);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
