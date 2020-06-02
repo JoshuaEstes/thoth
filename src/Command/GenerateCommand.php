@@ -4,7 +4,7 @@
 
 namespace Thoth\Command;
 
-use ParsedownExtra;
+use Mni\FrontYAML\Parser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -29,8 +29,8 @@ class GenerateCommand extends Command
         $this
             ->setDescription('Generates website')
             ->setDefinition([
-                new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', 'example'),
-                new InputOption('destination', 'dest', InputOption::VALUE_REQUIRED, 'What directory to you want your site output to?', 'public'),
+                new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', getcwd().'/example'),
+                new InputOption('destination', 'dest', InputOption::VALUE_REQUIRED, 'What directory to you want your site output to?', getcwd().'/public'),
                 new InputOption('theme', null, InputOption::VALUE_REQUIRED, '', 'default'),
                 //new InputOption('config', null, InputOption::VALUE_REQUIRED, '', '.thoth.yml'),
                 //new InputOption('env', null, InputOption::VALUE_REQUIRED, '', 'prod'),
@@ -44,7 +44,7 @@ class GenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // init twig
-        $loader = new FilesystemLoader(['themes/default']);
+        $loader = new FilesystemLoader();
         $loader->addPath('themes/default', 'default');
         $twig = new Environment($loader, [
             'autoescape' => false,
@@ -52,23 +52,31 @@ class GenerateCommand extends Command
         ]);
 
         // init markdown parser
-        $pExtra = new ParsedownExtra();
-        $pExtra->setBreaksEnabled(true);
+        $parser = new Parser();
 
         // Find Files
         $finder = new Finder();
-        $finder->files()->in($input->getOption('source'));
+        $finder
+            ->files()
+            ->name('*.md')
+            ->in($input->getOption('source'));
 
         if (!$finder->hasResults()) {
             $output->writeln('No files found');
 
             return 1;
         }
-
         foreach ($finder as $file) {
             $output->writeln(sprintf('Parsing "<info>%s</info>"', $file->getRelativePathname()));
-            $content  = $pExtra->text(file_get_contents($file->getRealPath()));
-            $rendered = $twig->load('@'.$input->getOption('theme').'/base.html.twig')->render(['content' => $content]);
+            $document = $parser->parse($file->getContents());
+            $context  = [
+                'site' => [], // @todo
+                'page' => $document->getYAML(),
+            ];
+            $context['content'] = $twig->createTemplate($document->getContent())->render($context);
+            $rendered = $twig
+                ->load('@'.$input->getOption('theme').'/base.html.twig')
+                ->render($context);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
             file_put_contents($input->getOption('destination').'/'.$filename, $rendered);
         }
