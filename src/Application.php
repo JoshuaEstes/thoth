@@ -18,10 +18,10 @@ class Application extends BaseApplication
 
         $this->addCommands([
             new Command\GenerateCommand(),
-            new Command\NewCommand(),
-            new Command\SelfUpdateCommand(),
-            new Command\ServeCommand(),
-            new Command\WatchCommand(),
+            //new Command\NewCommand(),
+            //new Command\SelfUpdateCommand(),
+            //new Command\ServeCommand(),
+            //new Command\WatchCommand(),
         ]);
     }
 }
