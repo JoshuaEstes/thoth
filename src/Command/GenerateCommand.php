@@ -32,7 +32,7 @@ class GenerateCommand extends Command
             ->setDefinition([
                 new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', getcwd()),
                 new InputOption('destination', 'dest', InputOption::VALUE_REQUIRED, 'What directory to you want your site output to?', getcwd().'/public'),
-                new InputOption('theme', null, InputOption::VALUE_REQUIRED, '', 'default'),
+                new InputOption('theme', null, InputOption::VALUE_REQUIRED, 'Theme to use', 'default'),
                 new InputOption('clear', null, InputOption::VALUE_NONE, 'Clears out our files in the destination directory before'),
                 //new InputOption('config', null, InputOption::VALUE_REQUIRED, '', '.thoth.yml'),
                 //new InputOption('env', null, InputOption::VALUE_REQUIRED, '', 'prod'),
