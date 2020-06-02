@@ -11,7 +11,8 @@ if (file_exists(dirname(__DIR__).'/vendor/autoload.php')) {
 } elseif (file_exists(dirname(__DIR__).'/../../autoload.php')) {
     require dirname(__DIR__).'/../../autoload.php';
 } else {
-    throw new \Exception('Composer does not seem to be installed');
+    echo 'Composer does not seem to be installed, please visit https://getcomposer.org/download/ to get started.'.PHP_EOL;
+    exit(1);
 }
 
 $app = new Application();
