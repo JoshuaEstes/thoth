@@ -1,2 +1,4 @@
-/vendor/
+example/
+public/
+vendor/
 composer.lock
