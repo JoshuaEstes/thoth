@@ -7,7 +7,7 @@ PHP Static Site Generator
 
 # Install
 
-`composer global install joshuaestes/thoth`
+`composer global require joshuaestes/thoth`
 
 # Getting Started
 
