@@ -66,16 +66,9 @@ class GenerateCommand extends Command
             return 1;
         }
         foreach ($finder as $file) {
-            $content = $pExtra->text(file_get_contents($file->getRealPath()));
-            $output = $twig->load('base.html.twig')->render(['content' => $content]);
+            $content  = $pExtra->text(file_get_contents($file->getRealPath()));
+            $output   = $twig->load('base.html.twig')->render(['content' => $content]);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
-            var_dump(
-                $file->getRealPath(),
-                $file->getRelativePathname(),
-                $content,
-                $output,
-                $filename
-            );
             file_put_contents($input->getOption('destination').'/'.$filename, $output);
         }
 
