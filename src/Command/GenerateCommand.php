@@ -43,8 +43,6 @@ class GenerateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(self::$defaultName);
-
         // init twig
         $loader = new FilesystemLoader(['themes/default']);
         $twig = new Environment($loader, [
@@ -65,12 +63,15 @@ class GenerateCommand extends Command
 
             return 1;
         }
+
         foreach ($finder as $file) {
             $content  = $pExtra->text(file_get_contents($file->getRealPath()));
-            $output   = $twig->load('base.html.twig')->render(['content' => $content]);
+            $rendered = $twig->load('base.html.twig')->render(['content' => $content]);
             $filename = preg_replace('/\.md/', '.html', $file->getRelativePathname());
-            file_put_contents($input->getOption('destination').'/'.$filename, $output);
+            file_put_contents($input->getOption('destination').'/'.$filename, $rendered);
         }
+
+        $output->writeln('Complete');
 
         return 0;
     }
