@@ -30,9 +30,10 @@ class GenerateCommand extends Command
         $this
             ->setDescription('Generates website')
             ->setDefinition([
-                new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', getcwd().'/example'),
+                new InputOption('source', 'src', InputOption::VALUE_REQUIRED, 'Where is the directory where you keep all your files?', getcwd()),
                 new InputOption('destination', 'dest', InputOption::VALUE_REQUIRED, 'What directory to you want your site output to?', getcwd().'/public'),
                 new InputOption('theme', null, InputOption::VALUE_REQUIRED, '', 'default'),
+                new InputOption('clear', null, InputOption::VALUE_NONE, 'Clears out our files in the destination directory before'),
                 //new InputOption('config', null, InputOption::VALUE_REQUIRED, '', '.thoth.yml'),
                 //new InputOption('env', null, InputOption::VALUE_REQUIRED, '', 'prod'),
             ])
@@ -59,6 +60,7 @@ class GenerateCommand extends Command
         $filesystem = new Filesystem();
 
         // Find Files
+        // @todo md, html, twig
         $finder = new Finder();
         $finder
             ->ignoreVCS(true)
@@ -71,6 +73,22 @@ class GenerateCommand extends Command
             $output->writeln('No files found');
 
             return 1;
+        }
+
+        // Display Settings Used to Generate
+        $output->writeln([
+            '',
+            sprintf('Source:      "%s"', $input->getOption('source')),
+            sprintf('Destination: "%s"', $input->getOption('destination')),
+            sprintf('Theme:       "%s"', $input->getOption('theme')),
+            sprintf('Clear:       "%s"', $input->getOption('clear') ? 'yes' : 'no'),
+            '',
+        ]);
+
+        if ($input->getOption('clear')) {
+            $output->writeln(sprintf('Deleting all files in "<comment>%s</comment>"...', $input->getOption('destination')));
+            $filesystem->remove($input->getOption('destination'));
+            $output->writeln(['All files removed', '']);
         }
 
         /**
